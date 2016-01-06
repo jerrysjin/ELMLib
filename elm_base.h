@@ -15,10 +15,13 @@
 #include "elm_macro.h"
 
 /** Specify the path for the header files 'Core' and 'SVD' of Eigen library
-*   e.g., "Eigen/Core"
+*   For example,
+*   #include <Eigen/Core>
+*   #include <Eigen/SVD>
 */
-#include "Eigen/Core"
-#include "Eigen/SVD"
+
+#include <Eigen/Core>
+#include <Eigen/SVD>
 
 #include <vector>
 #include <cmath>
@@ -109,7 +112,7 @@ namespace elm
 
 		elm_exception(std::string _msg) : message(_msg) { }
 
-		const char* what() const
+		const char* what() const _NOEXCEPT
 		{
 			return message.c_str();
 		}

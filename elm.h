@@ -23,7 +23,7 @@
 *
 *   Any bug report or suggestion is welcome!
 *
-*   Current Version - 0.20151123
+*   Current Version - 0.20160106
 */
 //////////////////////////////////////////////////////////////////////////
 
@@ -31,6 +31,6 @@
 #define HEADER_ELM_H
 
 /** Basic Elm Method */
-#include "basic_elm.h"    
+#include "basic_elm.h"
 
 #endif // HEADER_ELM_H

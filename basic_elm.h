@@ -10,6 +10,9 @@
 *
 *   Code developed by Shuo Jin at Dept. of MAE, CUHK, Hong Kong
 *   Email: jerry.shuojin@gmail.com. All rights reserved.
+*
+*   Changelog:
+*   0.20160106 - fix some minor compiling bugs
 */
 //////////////////////////////////////////////////////////////////////////
 
@@ -126,7 +129,7 @@ namespace elm
 		*     number of hidden nodes should be less than the number of samples.
 		*   Possible exception throw
 		*/
-		void train(const T _rglz_factor = 0.0, typename const basic_elm<T, ID, TD>::auto_weighting _autow_indicator = disable);
+		void train(const T _rglz_factor = 0.0, const basic_elm<T, ID, TD>::auto_weighting _autow_indicator = disable);
 
 		/** Predict output sample based on ELM training result
 		*   No exception throw
@@ -271,22 +274,22 @@ namespace elm
 	}
 
 	template <class T, size_t ID, size_t TD>
-	void basic_elm<T, ID, TD>::train(const T _rglz_factor, typename const basic_elm<T, ID, TD>::auto_weighting _autow_indicator)
+	void basic_elm<T, ID, TD>::train(const T _rglz_factor, const basic_elm<T, ID, TD>::auto_weighting _autow_indicator)
 	{
 		// Initialization
-		belm_initialize();
+		this->belm_initialize();
 
 		// Unweighted regularized ELM	
-		belm_compute_pseudo_inverse(_rglz_factor);
-		belm_compute_output_weight_matrix();
+		this->belm_compute_pseudo_inverse(_rglz_factor);
+		this->belm_compute_output_weight_matrix();
 
 		// end if auto weighting is disabled
 		if (disable == _autow_indicator) return;
 
 		// Weighted regularized ELM 
-		belm_compute_adaptive_diagonal_weights();
-		belm_compute_pseudo_inverse(_rglz_factor);
-		belm_compute_output_weight_matrix();
+		this->belm_compute_adaptive_diagonal_weights();
+		this->belm_compute_pseudo_inverse(_rglz_factor);
+		this->belm_compute_output_weight_matrix();
 	}
 
 	template <class T, size_t ID, size_t TD>
@@ -330,9 +333,9 @@ namespace elm
 
 		// training result
 		Eigen::IOFormat precision(Eigen::FullPrecision);
-		file << belm_ow_matrix << std::endl
+		file << belm_ow_matrix << std::endl;
 
-			file.close();
+		file.close();
 	}
 
 	template <class T, size_t ID, size_t TD>
@@ -403,7 +406,7 @@ namespace elm
 
 		for (size_t i = 0; i < belm_hidden_nodes_num; ++i)
 		{
-			belm_node_rndm_bias(i) = abs(belm_node_rndm_bias(i));
+			belm_node_rndm_bias(i) = std::fabs(belm_node_rndm_bias(i));
 		}
 
 		// basic ELM step 2 - calculate the hidden layer output matrix
@@ -443,19 +446,19 @@ namespace elm
 			Eigen::JacobiSVD< Eigen::MatrixXT<T> > svd_solver(temp_HTDDH_matrix, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
 #ifdef __ELM_CONSOLE_INFO__
-			// output condition number of HHT for reference
+			// output condition number for reference
 			T max_sval = std::numeric_limits<T>::lowest();
 			T min_sval = std::numeric_limits<T>::infinity();
 
 			for (size_t i = 0; i < belm_hidden_nodes_num; ++i)
 			{
-				if (abs(svd_solver.singularValues()(i)) > max_sval)
+				if (std::abs(svd_solver.singularValues()(i)) > max_sval)
 				{
-					max_sval = abs(svd_solver.singularValues()(i));
+					max_sval = std::abs(svd_solver.singularValues()(i));
 				}
-				if (abs(svd_solver.singularValues()(i)) < min_sval)
+				if (std::abs(svd_solver.singularValues()(i)) < min_sval)
 				{
-					min_sval = abs(svd_solver.singularValues()(i));
+					min_sval = std::abs(svd_solver.singularValues()(i));
 				}
 			}
 
@@ -479,19 +482,19 @@ namespace elm
 			Eigen::JacobiSVD< Eigen::MatrixXT<T> > svd_solver(temp_HHTDD_matrix, Eigen::ComputeThinU | Eigen::ComputeThinV);
 
 #ifdef __ELM_CONSOLE_INFO__
-			// output condition number of HHT for reference
+			// output condition number for reference
 			T max_sval = std::numeric_limits<T>::lowest();
 			T min_sval = std::numeric_limits<T>::infinity();
 
 			for (size_t i = 0; i < sample_size; ++i)
 			{
-				if (abs(svd_solver.singularValues()(i)) > max_sval)
+				if (std::abs(svd_solver.singularValues()(i)) > max_sval)
 				{
-					max_sval = abs(svd_solver.singularValues()(i));
+					max_sval = std::abs(svd_solver.singularValues()(i));
 				}
-				if (abs(svd_solver.singularValues()(i)) < min_sval)
+				if (std::abs(svd_solver.singularValues()(i)) < min_sval)
 				{
-					min_sval = abs(svd_solver.singularValues()(i));
+					min_sval = std::abs(svd_solver.singularValues()(i));
 				}
 			}
 
@@ -606,8 +609,8 @@ namespace elm
 
 		return idx_vec;
 	}
-
 	/** End of basic_elm class implementation */
+
 } // namespace elm
 
 #endif // HEADER_BASIC_ELM_H

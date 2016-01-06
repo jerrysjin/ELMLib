@@ -19,6 +19,9 @@
 *   enable or disable the corresponding features
 */
 
+/** Version info */
+#define __ELM_LIB_VERSION__ 0.20160106
+
 /** Enable output on console */
 #define __ELM_CONSOLE_INFO__
 
