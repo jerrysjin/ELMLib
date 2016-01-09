@@ -28,7 +28,6 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
-#include <exception>
 
 namespace elm
 {
@@ -102,7 +101,7 @@ namespace elm
 	};
 
 	/** Exception delivering proper error message */
-	struct elm_exception : public std::exception
+	struct elm_exception
 	{
 		std::string message;
 
@@ -112,7 +111,7 @@ namespace elm
 
 		elm_exception(std::string _msg) : message(_msg) { }
 
-		const char* what() const _NOEXCEPT
+		const char* what() const
 		{
 			return message.c_str();
 		}
